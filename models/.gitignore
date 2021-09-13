@@ -1,9 +1,0 @@
-WGAN/*
-Selfies_Autoencoder/*
-!Selfies_Autoencoder/selfies_EncoderDecoder_epoch0010.h5
-!WGAN/wgan_C_500epochs.h5
-!WGAN/wgan_D_500epochs.h5
-!WGAN/wgan_G1_500epochs.h5
-!WGAN/wgan_condition_encoder_500epochs.h5
-!WGAN/wgan_classifier.h5
-!*.ipynb
