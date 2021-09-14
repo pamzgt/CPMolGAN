@@ -125,7 +125,7 @@ class InferenceModel:
         self.wgan = GANwCondition( latent_dim=latent_dim, noise_dim=noise_dim, verbose=verbose)
         self.wgan.C.load_weights(weight_paths["wgan"]["C"])
         self.wgan.D.load_weights(weight_paths["wgan"]["D"])
-        self.wgan.G1.load_weights(weight_paths["wgan"]["G1"])
+        self.wgan.G.load_weights(weight_paths["wgan"]["G"])
         self.wgan.condition_encoder.load_weights(weight_paths["wgan"]["condition_encoder"])
         self.wgan.classifier.load_weights(weight_paths["wgan"]["classifier"])
         
@@ -172,7 +172,7 @@ class InferenceModel:
         Generated compounds that satisfy the condition
         """
         np.random.seed(seed)
-        sampled_latent_space = self.wgan.G1.predict([np.random.normal(0, 1, (nsamples, noise_dim)),np.repeat(condition, nsamples, axis=0)])
+        sampled_latent_space = self.wgan.G.predict([np.random.normal(0, 1, (nsamples, noise_dim)),np.repeat(condition, nsamples, axis=0)])
         decoded_smiles = self.decode_latent_to_smiles(sampled_latent_space)
         
         # Get classification values for compounds and conditions

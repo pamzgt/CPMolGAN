@@ -122,7 +122,7 @@ class GANwCondition():
         self.classifier.compile(loss='binary_crossentropy', optimizer=optimizer_c, metrics=['accuracy'])
         
         # Build  generator for pahse 1
-        self.G1 = self.build_generator(self.condition_encoder, name='Generator Phase 1', verbose=verbose)
+        self.G = self.build_generator(self.condition_encoder, name='Generator Phase 1', verbose=verbose)
                
         # Build  discriminator
         self.D = self.build_discriminator(name='Discriminator', verbose=verbose)
@@ -133,7 +133,7 @@ class GANwCondition():
 
         # Build and compile StackGAN
         self.classifier_weight = K.variable(0.)
-        self.GAN = self.build_GAN([self.G1], self.D, self.classifier, inputSize=self.noise_dim, name='GAN', verbose=verbose)
+        self.GAN = self.build_GAN([self.G], self.D, self.classifier, inputSize=self.noise_dim, name='GAN', verbose=verbose)
         self.GAN.compile(loss=[self.wasserstein_loss, 'binary_crossentropy'], loss_weights=[1,5], optimizer=optimizer_g)
     
     def mean_loss(self, y_true, y_pred):
@@ -344,7 +344,7 @@ class GANwCondition():
                 noise = np.random.normal(0, 1, (samples, self.noise_dim))
                 
                 # Generate a half batch of new data               
-                G1_out = self.G1.predict([noise, real_conditions_step])
+                G_out = self.G.predict([noise, real_conditions_step])
 
                 # Generate labels
                 valid = np.ones((samples, 1))
@@ -355,7 +355,7 @@ class GANwCondition():
                 # ----------------------
                 
                 # Train the C1
-                c_loss = self.C.train_on_batch([real_data_step, G1_out], [valid, valid])
+                c_loss = self.C.train_on_batch([real_data_step, G_out], [valid, valid])
                                 
                 # ---------------------
                 #  Train Generators
@@ -366,18 +366,18 @@ class GANwCondition():
                     # Train both generators
                     g_loss = self.GAN.train_on_batch([noise, real_conditions_step], [valid*-1, valid])
                 
-                    if verbose: logging.info("%d/%d [D loss: %f] [G1 loss: %f] [G1 class: %f]" %
+                    if verbose: logging.info("%d/%d [D loss: %f] [G loss: %f] [G class: %f]" %
                                        (step, steps, c_loss[0], g_loss[1], g_loss[2]))
                     self.losses.append(c_loss[0:1]+g_loss)
          
             # Calculate Frechet Distance and classification loss
             noise = np.random.normal(0, 1, (len(conditions), self.noise_dim))
                             
-            G1_out = self.G1.predict([noise, conditions])
-            class_loss = self.classifier.evaluate([G1_out, conditions], np.ones((len(conditions), 1)), verbose = 0)
+            G_out = self.G.predict([noise, conditions])
+            class_loss = self.classifier.evaluate([G_out, conditions], np.ones((len(conditions), 1)), verbose = 0)
             
-            FD1 = self.calculate_frechet_distance(mu1=np.mean(G1_out, axis=0), mu2=np.mean(data, axis=0),
-                                                  sigma1=np.cov(G1_out.T), sigma2=np.cov(data.T))
+            FD1 = self.calculate_frechet_distance(mu1=np.mean(G_out, axis=0), mu2=np.mean(data, axis=0),
+                                                  sigma1=np.cov(G_out.T), sigma2=np.cov(data.T))
             if verbose: 
                 logging.info("\nEpoch: %d/%d [Frechet Distance 1: %f] [Class 1: %f]\n" %((epoch+1), epochs, FD1, class_loss[0]))
             self.FD.append((FD1, class_loss[0]))                         
@@ -390,7 +390,7 @@ class GANwCondition():
                     
                 self.C.save_weights(os.path.join(checkdir, "wgan_C_" + str(epoch+1) + "epochs.h5"))
                 self.D.save_weights(os.path.join(checkdir, "wgan_D_" + str(epoch+1) + "epochs.h5"))
-                self.G1.save_weights(os.path.join(checkdir, "wgan_G1_" + str(epoch+1) + "epochs.h5"))
+                self.G.save_weights(os.path.join(checkdir, "wgan_G_" + str(epoch+1) + "epochs.h5"))
                 self.condition_encoder.save_weights(os.path.join(checkdir, "wgan_condition_encoder_" + str(epoch+1) + "epochs.h5"))
                 if verbose: logging.info('Saving to', checkdir, '\n')
                
