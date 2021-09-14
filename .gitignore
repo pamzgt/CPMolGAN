@@ -1,2 +1,5 @@
 .ipynb_checkpoints
 __pycache__
+*.csv
+random_collage
+cp_mol_gan.egg-info
