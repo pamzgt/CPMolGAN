@@ -6,7 +6,7 @@ Code to run inference on the modle presented in "Cell morphology-guided de novo 
 - Clone repository: `git clone git@github.com:pamzgt/CPMolGAN.git`
 - Create conda environment from the `environment.yml` file:  
 `conda env create -f environment.yml`
-- Activate your environment: `conda activate CPMolGAN`
+- Activate your environment: `conda activate cpmolgan`
 - Install this project as python package: `pip install -e .`
 
 ## Downloading Pretrained Model
