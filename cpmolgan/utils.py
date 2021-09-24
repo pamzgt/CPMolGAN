@@ -20,13 +20,15 @@ def num_atoms_from_smiles(smiles):
     mol  = Chem.MolFromSmiles(smiles)
     return mol.GetNumAtoms()
 
+
 class PhysChemFilters:
     """
     Applies filters on several physicochemical properties and structural alerts 
     """
     def __init__(self):
         
-        alerts_path = "/gpfs01/deepmind/Oscar_data/etkoy/CellPainting_GAN/data/ChEMBL_and_Pubchem/sure_chembl_alerts.txt"
+        alerts_path = "../CellPainting_GAN/data/ChEMBL_and_Pubchem/sure_chembl_alerts.txt"
+        raise FileNotFoundError # to do upload file
         smarts = pd.read_csv(alerts_path, header=None, sep='\t', encoding='utf-8')[1].tolist()
         self.alert_mols = [Chem.MolFromSmarts(smart) for smart in smarts if Chem.MolFromSmarts(smart) is not None]
         self.range_logP = [-2,7]

@@ -1,22 +1,14 @@
-import math
-from scipy import linalg
-import logging
-
 import tensorflow as tf
 from tensorflow.keras import backend as K
-from tensorflow.keras.utils import Sequence
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.optimizers import Adam, RMSprop
-from tensorflow.python.keras.layers.merge import _Merge
-from tensorflow.python.keras.engine.base_layer import Layer
-from tensorflow.keras.losses import mean_squared_error, categorical_crossentropy
 from tensorflow.keras.layers import Input, Dense, Lambda, Concatenate, Embedding, concatenate, RNN, GRUCell
-from tensorflow.keras.layers import  Activation, Permute, BatchNormalization, Dropout, Add, dot, Dot, Multiply, Subtract 
+from tensorflow.keras.layers import Activation, Permute, BatchNormalization, Dropout, Add, dot, Dot, Multiply, Subtract
 from tensorflow.keras.layers import TimeDistributed, Bidirectional
-from tensorflow.keras.layers import GRU, LSTM
 from tensorflow.keras.layers import ELU, LeakyReLU
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, Callback
-from utils import *
+
+
+from cpmolgan.utils import *
 
 
 def build_encoder_decoder(num_tokens, latent_dim= 256, weights=None, verbose=True):

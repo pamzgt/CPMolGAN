@@ -2,14 +2,11 @@ import numpy as np
 import pandas as pd
 from re import split
 import selfies
-import tensorflow as tf
-import warnings
 import logging
 from tqdm import tqdm
 
-import utils
-from models import build_encoder_decoder 
-from models import GANwCondition 
+from cpmolgan.models import build_encoder_decoder
+from cpmolgan.models import GANwCondition
 
 
 # Global variables for hardcoded model parameters
